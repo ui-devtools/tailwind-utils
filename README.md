@@ -49,3 +49,22 @@ const definition:Definition = parse('md:w-48');
 const className:string = create({ responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor', value: 'red-500' })
 // 'md:hover:bg-48'
 ```
+
+### TODOs
+
+- [ ] Set up repo
+- [ ] Set up typescript
+- [ ] Set up tests
+- [ ] Parse [theme file](https://tailwindcss.com/docs/configuration#creating-your-configuration-file)
+- [ ] parse: key-value
+- [ ] parse: key without value (like [`border`](https://tailwindcss.com/docs/border-width)
+- [ ] parse: value without key (like [`block`](https://tailwindcss.com/docs/display#block))
+- [ ] parse: [responsive modifier](https://tailwindcss.com/docs/responsive-design)
+- [ ] parse: [pseudo modifier](https://tailwindcss.com/docs/hover-focus-and-other-states)
+- [ ] create: key-value
+- [ ] create: key without value (like [`border`](https://tailwindcss.com/docs/border-width)
+- [ ] create: value without key (like [`block`](https://tailwindcss.com/docs/display#block))
+- [ ] create: [responsive modifier](https://tailwindcss.com/docs/responsive-design)
+- [ ] create: [pseudo modifier](https://tailwindcss.com/docs/hover-focus-and-other-states)
+
+
