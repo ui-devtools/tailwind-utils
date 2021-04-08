@@ -50,7 +50,7 @@ const className:string = create({ responsiveModifier: 'md', pseudoModifier: 'hov
 // 'md:hover:bg-48'
 ```
 
-### TODOs
+### Rough checklist
 
 - [ ] Set up repo
 - [ ] Set up typescript
@@ -66,5 +66,5 @@ const className:string = create({ responsiveModifier: 'md', pseudoModifier: 'hov
 - [ ] create: value without key (like [`block`](https://tailwindcss.com/docs/display#block))
 - [ ] create: [responsive modifier](https://tailwindcss.com/docs/responsive-design)
 - [ ] create: [pseudo modifier](https://tailwindcss.com/docs/hover-focus-and-other-states)
-
+- [ ] Readme
 
