@@ -68,3 +68,5 @@ const className:string = create({ responsiveModifier: 'md', pseudoModifier: 'hov
 - [ ] create: [pseudo modifier](https://tailwindcss.com/docs/hover-focus-and-other-states)
 - [ ] Readme
 
+This library will replace the tightly coupled utils - https://github.com/ui-devtools/ui-devtools/blob/main/packages/devtools/src/utils.js
+
