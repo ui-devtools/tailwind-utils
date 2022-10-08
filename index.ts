@@ -1,12 +1,16 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import type { Config } from 'tailwindcss/types/config';
+import flattenColorPalette from 'tailwindcss/src/util/flattenColorPalette';
 import { properties, singleWordUtilities } from './properties';
 
 const Tailwind = (config: Config) => {
   const resolvedConfig = resolveConfig(config);
   const theme = resolvedConfig.theme || {};
 
-  const responsiveModifiers = Object.keys(theme.screens || []);
+  const flatColors = flattenColorPalette(theme.colors);
+
+  // TODO: check source code for this because the types are more flexible than object
+  const responsiveModifiers = Object.keys(theme.screens || {});
   const pseudoModifiers = resolvedConfig.variantOrder;
 
   const parse = (className = '') => {
@@ -18,74 +22,56 @@ const Tailwind = (config: Config) => {
     let propertyValue: string;
     let relatedProperties: { [key: string]: string } | null = null;
 
-    let keyValue: string = '';
+    let classNameWithoutModifers: string = '';
 
     const numberOfModifiers = className.split(':').length - 1;
 
-    if (numberOfModifiers === 0) keyValue = className;
+    if (numberOfModifiers === 0) classNameWithoutModifers = className;
     else if (numberOfModifiers === 1) {
       const unknownModifier = className.split(':')[0];
-      keyValue = className.split(':')[1];
+      classNameWithoutModifers = className.split(':')[1];
       if (responsiveModifiers.includes(unknownModifier)) responsiveModifier = unknownModifier;
       else if (pseudoModifiers.includes(unknownModifier)) pseudoModifier = unknownModifier;
-      else; // have no idea what this is, ignore
+      else; // have no idea what this is, TODO: should this ignore or throw an error?
     } else if (numberOfModifiers === 2) {
       responsiveModifier = className.split(':')[0];
       pseudoModifier = className.split(':')[1];
-      keyValue = className.split(':')[2];
+      classNameWithoutModifers = className.split(':')[2];
     }
 
-    let prefix: string;
-    let possiblePrefixes: string[];
-    let valueKey: string;
-
-    const numberOfHyphens = keyValue.split('-').length - 1;
-
-    if (numberOfHyphens === 0) {
-      possiblePrefixes = [keyValue];
-      valueKey = 'DEFAULT';
-    } else if (numberOfHyphens === 1) {
-      possiblePrefixes = [keyValue.split('-')[0]];
-      valueKey = keyValue.split('-')[1];
-    } else if (numberOfHyphens === 2) {
-      // if there are more than one - in the className, we need to test for both styles
-      // text-blue-600 and drop-shadow-md
-      possiblePrefixes = [keyValue.split('-')[0] + '-' + keyValue.split('-')[1]];
-      prefix = 'TODO';
-      valueKey = 'TODO';
-    } else {
-      // wow, no clue what's going on here
-      propertyName = 'ERROR';
-      propertyValue = 'ERROR';
-    }
-
-    // TODO: this would only work if there was one prefix
-    // so we should make possiblePrefix an array and use that here
-    const possibleProperties = properties.filter((p) => p.prefix === prefix);
+    const possibleProperties = properties.filter((property) =>
+      classNameWithoutModifers.startsWith(property.prefix + '-')
+    );
 
     // if keyValue does not have a prefix, it's probably a singleWordUtility
     if (possibleProperties.length === 0) {
-      if (Object.keys(singleWordUtilities).includes(prefix)) {
-        propertyName = singleWordUtilities[prefix as keyof typeof singleWordUtilities].name;
-        propertyValue = singleWordUtilities[prefix as keyof typeof singleWordUtilities].value;
+      if (Object.keys(singleWordUtilities).includes(classNameWithoutModifers)) {
+        propertyName = singleWordUtilities[classNameWithoutModifers as keyof typeof singleWordUtilities].name;
+        propertyValue = singleWordUtilities[classNameWithoutModifers as keyof typeof singleWordUtilities].value;
       } else {
+        // no clue what this is then
         propertyName = 'ERROR';
         propertyValue = 'ERROR';
       }
     } else {
       // match value to find property
       const matchingProperty = possibleProperties.find((property) => {
-        const scale = theme[property.scale];
-        const possibleValue = scale[valueKey];
+        const scale = property.scale === 'colors' ? flatColors : theme[property.scale];
+        const scaleKey = classNameWithoutModifers.replace(property.prefix + '-', '');
+        const possibleValue = scale[scaleKey];
 
         // this could be null if it's not the right property
-        return possibleValue;
+        return Boolean(possibleValue);
       });
 
       if (matchingProperty) {
         propertyName = matchingProperty.name;
-        const possibleValue = theme[matchingProperty.scale][valueKey];
 
+        const scale = matchingProperty.scale === 'colors' ? flatColors : theme[matchingProperty.scale];
+        const scaleKey = classNameWithoutModifers.replace(matchingProperty.prefix + '-', '');
+        const possibleValue = scale[scaleKey];
+
+        // fontSize is special
         if (propertyName === 'fontSize' && Array.isArray(possibleValue)) {
           propertyValue = possibleValue[0];
           relatedProperties = possibleValue[1];
@@ -96,6 +82,8 @@ const Tailwind = (config: Config) => {
           propertyValue = possibleValue;
         }
       } else {
+        // no clue if there is no matching property
+        // most likely, this is because we don't have it in ./properties
         propertyName = 'ERROR';
         propertyValue = 'ERROR';
       }

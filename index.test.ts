@@ -16,7 +16,7 @@ describe('parse', () => {
     });
   });
 
-  test('md:w-48', async function () {
+  test('md:w-48', () => {
     assert.deepEqual(parse('md:w-48'), {
       className: 'md:w-48',
       responsiveModifier: 'md',
@@ -27,7 +27,7 @@ describe('parse', () => {
     });
   });
 
-  test('text-sm', async function () {
+  test('text-sm', () => {
     assert.deepEqual(parse('text-sm'), {
       className: 'text-sm',
       responsiveModifier: null,
@@ -38,18 +38,29 @@ describe('parse', () => {
     });
   });
 
-  test('md:hover:text-blue-600', async function () {
+  test('md:hover:text-blue-600', () => {
     assert.deepEqual(parse('md:hover:text-blue-600'), {
       className: 'md:hover:text-blue-600',
       responsiveModifier: 'md',
       pseudoModifier: 'hover',
       property: 'textColor',
-      value: 'rgb(37 99 235)',
+      value: '#2563eb',
       relatedProperties: null
     });
   });
 
-  test('absolute', async function () {
+  test('hover:bg-green-100', () => {
+    assert.deepEqual(parse('hover:bg-green-100'), {
+      className: 'hover:bg-green-100',
+      responsiveModifier: null,
+      pseudoModifier: 'hover',
+      property: 'backgroundColor',
+      value: '#dcfce7',
+      relatedProperties: null
+    });
+  });
+
+  test('absolute', () => {
     assert.deepEqual(parse('absolute'), {
       className: 'absolute',
       responsiveModifier: null,
@@ -60,7 +71,7 @@ describe('parse', () => {
     });
   });
 
-  test('font-serif', async function () {
+  test('font-serif', () => {
     assert.deepEqual(parse('font-serif'), {
       className: 'font-serif',
       responsiveModifier: null,
@@ -71,13 +82,48 @@ describe('parse', () => {
     });
   });
 
-  test('drop-shadow-md', async function () {
+  test('drop-shadow-md', () => {
     assert.deepEqual(parse('drop-shadow-md'), {
       className: 'drop-shadow-md',
       responsiveModifier: null,
       pseudoModifier: null,
       property: 'dropShadow',
       value: '0 4px 3px rgb(0 0 0 / 0.07), 0 2px 2px rgb(0 0 0 / 0.06)',
+      relatedProperties: null
+    });
+  });
+
+  // unhandled input
+  test('block', () => {
+    assert.deepEqual(parse('block'), {
+      className: 'block',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'ERROR',
+      value: 'ERROR',
+      relatedProperties: null
+    });
+  });
+
+  // incorrect input
+  test('hovers:bg-green-100', () => {
+    assert.deepEqual(parse('hovers:bg-green-100'), {
+      className: 'hovers:bg-green-100',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'backgroundColor',
+      value: '#dcfce7',
+      relatedProperties: null
+    });
+  });
+
+  test('bg-green-1000', () => {
+    assert.deepEqual(parse('bg-green-1000'), {
+      className: 'bg-green-1000',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'ERROR',
+      value: 'ERROR',
       relatedProperties: null
     });
   });
