@@ -93,7 +93,7 @@ describe('parse', () => {
     });
   });
 
-  // unhandled input
+  // todo: unhandled input
   test('block', () => {
     assert.deepEqual(parse('block'), {
       className: 'block',

@@ -13,7 +13,7 @@ const Tailwind = (config: Config) => {
   const responsiveModifiers = Object.keys(theme.screens || {});
   const pseudoModifiers = resolvedConfig.variantOrder;
 
-  const parse = (className = '') => {
+  const parse = (className: string = '') => {
     // format: prefix-value | responsive:prefix-value | pseudo:prefix-value | responsive:pseudo:prefix-value
 
     let responsiveModifier: string | null = null;
@@ -99,7 +99,78 @@ const Tailwind = (config: Config) => {
     };
   };
 
-  const classname = () => {};
+  const classname = ({
+    responsiveModifier,
+    pseudoModifier,
+    property: propertyName,
+    value: propertyValue
+  }: {
+    responsiveModifier: string | null;
+    pseudoModifier: string | null;
+    property: string;
+    value: string;
+  }) => {
+    let className: string | undefined = '';
+    let error: {
+      responsiveModifier?: string;
+      pseudoModifier?: string;
+      property?: string;
+      value?: string;
+    } = {};
+
+    if (responsiveModifier) {
+      if (responsiveModifiers.includes(responsiveModifier)) className = responsiveModifier + ':';
+      else
+        error['responsiveModifier'] = `Unidentified responsive modifier, expected one of [${responsiveModifiers.join(
+          ', '
+        )}], got ${responsiveModifier}`;
+    }
+
+    if (pseudoModifier) {
+      if (pseudoModifiers.includes(pseudoModifier)) className = className + pseudoModifier + ':';
+      else
+        error['pseudoModifier'] = `Unidentified pseudo modifier, expected one of [${pseudoModifiers.join(
+          ', '
+        )}], got ${pseudoModifier}`;
+    }
+
+    const matchingProperty = properties.find((property) => property.name === propertyName);
+
+    if (matchingProperty) {
+      className += matchingProperty.prefix + '-';
+
+      // find value on scale
+      const scale = matchingProperty.scale === 'colors' ? flatColors : theme[matchingProperty.scale];
+      if (scale) {
+        let scaleKey;
+        if (propertyName === 'fontSize') {
+          // format: sm: [ '0.875rem', { lineHeight: '1.25rem' } ],
+          scaleKey = Object.keys(scale).find((key) => scale[key][0] === propertyValue);
+        } else {
+          scaleKey = Object.keys(scale).find((key) => {
+            // true for dropShadow and fontFamily
+            if (Array.isArray(scale[key])) return scale[key].join(', ') === propertyValue;
+            else return scale[key] === propertyValue;
+          });
+        }
+
+        if (scaleKey) className += scaleKey;
+        else error['value'] = 'UNIDENTIFIED_VALUE';
+      } else {
+        error['property'] = 'UNIDENTIFIED_PROPERTY';
+      }
+    } else {
+      const isSingleWordUtility = Object.values(singleWordUtilities).find((property) => {
+        return property.name === propertyName && property.value === propertyValue;
+      });
+
+      if (isSingleWordUtility) className = className + propertyValue;
+      else error['property'] = 'UNIDENTIFIED_PROPERTY';
+    }
+
+    if (Object.keys(error).length > 0) return { error };
+    else return { className };
+  };
 
   return { parse, classname };
 };
