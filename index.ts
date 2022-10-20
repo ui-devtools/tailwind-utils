@@ -1,7 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import type { Config } from 'tailwindcss/types/config';
-import flattenColorPalette from 'tailwindcss/src/util/flattenColorPalette';
-import { properties, singleWordUtilities } from './properties';
+import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
+import { properties, namedClassProperties, unsupportedProperties } from './properties';
 
 const Tailwind = (config: Config) => {
   const resolvedConfig = resolveConfig(config);
@@ -9,18 +9,30 @@ const Tailwind = (config: Config) => {
 
   const flatColors = flattenColorPalette(theme.colors);
 
+  // add negative values to scales
+  Object.keys(properties).forEach((property) => {
+    const { scale, supportsNegativeValues } = properties[property];
+    if (supportsNegativeValues && theme[scale] && !theme[scale].negativeValuesAdded) {
+      Object.keys(theme[scale]).forEach((key) => {
+        theme[scale]['-' + key] = '-' + theme[scale][key];
+      });
+      theme[scale].negativeValuesAdded = true;
+    }
+  });
+
   // TODO: check source code for this because the types are more flexible than object
   const responsiveModifiers = Object.keys(theme.screens || {});
   const pseudoModifiers = resolvedConfig.variantOrder;
 
   const parse = (className: string = '') => {
-    // format: prefix-value | responsive:prefix-value | pseudo:prefix-value | responsive:pseudo:prefix-value
+    if (className.startsWith('.')) className = className.replace('.', '');
 
+    // format: prefix-value | responsive:prefix-value | pseudo:prefix-value | responsive:pseudo:prefix-value
     let responsiveModifier: string | null = null;
     let pseudoModifier: string | null = null;
     let propertyName: string;
-    let propertyValue: string;
-    let relatedProperties: { [key: string]: string } | null = null;
+    let propertyValue: string | null;
+    let relatedProperties: { [key: string]: string } = {};
 
     let classNameWithoutModifers: string = '';
 
@@ -39,53 +51,89 @@ const Tailwind = (config: Config) => {
       classNameWithoutModifers = className.split(':')[2];
     }
 
-    const possibleProperties = properties.filter((property) =>
-      classNameWithoutModifers.startsWith(property.prefix + '-')
-    );
+    let isNegative = false;
+    if (classNameWithoutModifers.startsWith('-')) {
+      isNegative = true;
+      classNameWithoutModifers = classNameWithoutModifers.replace('-', '');
+    }
 
-    // if keyValue does not have a prefix, it's probably a singleWordUtility
-    if (possibleProperties.length === 0) {
-      if (Object.keys(singleWordUtilities).includes(classNameWithoutModifers)) {
-        propertyName = singleWordUtilities[classNameWithoutModifers as keyof typeof singleWordUtilities].name;
-        propertyValue = singleWordUtilities[classNameWithoutModifers as keyof typeof singleWordUtilities].value;
+    // check named classes first
+    if (namedClassProperties[classNameWithoutModifers]) {
+      const styles = namedClassProperties[classNameWithoutModifers];
+      if (Object.keys(styles).length > 1) {
+        propertyName = 'composite';
+        propertyValue = null;
+        relatedProperties = styles;
       } else {
-        // no clue what this is then
-        propertyName = 'ERROR';
-        propertyValue = 'ERROR';
+        propertyName = Object.keys(styles)[0];
+        propertyValue = styles[propertyName];
       }
     } else {
-      // match value to find property
-      const matchingProperty = possibleProperties.find((property) => {
-        const scale = property.scale === 'colors' ? flatColors : theme[property.scale];
-        const scaleKey = classNameWithoutModifers.replace(property.prefix + '-', '');
-        const possibleValue = scale[scaleKey];
-
-        // this could be null if it's not the right property
-        return Boolean(possibleValue);
+      const possiblePropertiesNames = Object.keys(properties).filter((name) => {
+        const property = properties[name];
+        if (classNameWithoutModifers === property.prefix) return true; // flex-grow-DEFAULT = flex-grow
+        if (classNameWithoutModifers.startsWith(property.prefix + '-')) return true;
+        return false;
       });
 
-      if (matchingProperty) {
-        propertyName = matchingProperty.name;
-
-        const scale = matchingProperty.scale === 'colors' ? flatColors : theme[matchingProperty.scale];
-        const scaleKey = classNameWithoutModifers.replace(matchingProperty.prefix + '-', '');
-        const possibleValue = scale[scaleKey];
-
-        // fontSize is special
-        if (propertyName === 'fontSize' && Array.isArray(possibleValue)) {
-          propertyValue = possibleValue[0];
-          relatedProperties = possibleValue[1];
-        } else if (Array.isArray(possibleValue)) {
-          // true for fontFamily and dropShadow
-          propertyValue = possibleValue.join(', ');
-        } else {
-          propertyValue = possibleValue;
-        }
-      } else {
-        // no clue if there is no matching property
-        // most likely, this is because we don't have it in ./properties
+      if (possiblePropertiesNames.length === 0) {
+        // no clue what this is then
+        // TODO: improve error for unhandled properties
         propertyName = 'ERROR';
         propertyValue = 'ERROR';
+      } else {
+        // match value to find property
+        const matchingPropertyName = possiblePropertiesNames
+          .sort((a, b) => properties[b].prefix.length - properties[a].prefix.length)
+          .find((name) => {
+            const property = properties[name];
+
+            const scale = property.scale === 'colors' ? flatColors : theme[property.scale];
+            if (!scale) return false; // couldn't find scale for property, probably unhandled
+
+            const scaleKey =
+              property.scale === 'colors'
+                ? // remove opacity modifier
+                  classNameWithoutModifers.split('/')[0].replace(property.prefix + '-', '')
+                : classNameWithoutModifers.replace(property.prefix + '-', '');
+
+            if (scale.DEFAULT) scale[property.prefix] = scale.DEFAULT;
+
+            const possibleValue = scale[scaleKey];
+            // this could be null if it's not the right property
+            return Boolean(possibleValue);
+          });
+
+        if (matchingPropertyName) {
+          propertyName = matchingPropertyName;
+          const property = properties[matchingPropertyName];
+
+          const scale = property.scale === 'colors' ? flatColors : theme[property.scale];
+          const scaleKey =
+            property.scale === 'colors'
+              ? // remove opacity modifier
+                classNameWithoutModifers.split('/')[0].replace(property.prefix + '-', '')
+              : classNameWithoutModifers.replace(property.prefix + '-', '');
+          const possibleValue = scale[scaleKey];
+
+          // fontSize is special
+          if (propertyName === 'fontSize' && Array.isArray(possibleValue)) {
+            propertyValue = possibleValue[0];
+            relatedProperties = possibleValue[1];
+          } else if (property.scale === 'colors') {
+            const opacity = parseInt(classNameWithoutModifers.split('/')[1]);
+            propertyValue = possibleValue + (opacity ? percentToHex(opacity) : '');
+          } else if (Array.isArray(possibleValue)) {
+            // true for fontFamily and dropShadow
+            propertyValue = possibleValue.join(', ');
+          } else {
+            propertyValue = possibleValue;
+          }
+        } else {
+          // no clue what this is then
+          propertyName = 'ERROR';
+          propertyValue = 'ERROR';
+        }
       }
     }
 
@@ -94,7 +142,7 @@ const Tailwind = (config: Config) => {
       responsiveModifier,
       pseudoModifier,
       property: propertyName,
-      value: propertyValue,
+      value: isNegative ? '-' + propertyValue : propertyValue,
       relatedProperties
     };
   };
@@ -118,6 +166,10 @@ const Tailwind = (config: Config) => {
       value?: string;
     } = {};
 
+    if (unsupportedProperties.includes(propertyName)) {
+      error['property'] = 'UNSUPPORTED_PROPERTY';
+    }
+
     if (responsiveModifier) {
       if (responsiveModifiers.includes(responsiveModifier)) className = responsiveModifier + ':';
       else
@@ -134,18 +186,23 @@ const Tailwind = (config: Config) => {
         )}], got ${pseudoModifier}`;
     }
 
-    const matchingProperty = properties.find((property) => property.name === propertyName);
+    const matchingProperty = properties[propertyName];
 
     if (matchingProperty) {
-      className += matchingProperty.prefix + '-';
-
       // find value on scale
       const scale = matchingProperty.scale === 'colors' ? flatColors : theme[matchingProperty.scale];
+
       if (scale) {
         let scaleKey;
+
         if (propertyName === 'fontSize') {
           // format: sm: [ '0.875rem', { lineHeight: '1.25rem' } ],
           scaleKey = Object.keys(scale).find((key) => scale[key][0] === propertyValue);
+        } else if (matchingProperty.scale === 'colors') {
+          scaleKey = Object.keys(scale).find((key) => {
+            // TODO: check for opacity
+            return scale[key] === propertyValue;
+          });
         } else {
           scaleKey = Object.keys(scale).find((key) => {
             // true for dropShadow and fontFamily
@@ -154,25 +211,48 @@ const Tailwind = (config: Config) => {
           });
         }
 
-        if (scaleKey) className += scaleKey;
+        // move - for negative value to prefix
+        const isNegative = scaleKey?.startsWith('-');
+
+        if (isNegative) {
+          className += '-';
+          scaleKey = scaleKey.replace('-', '');
+        }
+
+        className += matchingProperty.prefix;
+
+        if (scaleKey === 'DEFAULT') {
+          /* we don't add default */
+        } else if (scaleKey) className += '-' + scaleKey;
         else error['value'] = 'UNIDENTIFIED_VALUE';
       } else {
         error['property'] = 'UNIDENTIFIED_PROPERTY';
       }
     } else {
-      const isSingleWordUtility = Object.values(singleWordUtilities).find((property) => {
-        return property.name === propertyName && property.value === propertyValue;
+      const namedClassPropertyIndex = Object.values(namedClassProperties).findIndex((styles) => {
+        if (Object.keys(styles).length > 1) return false;
+
+        const name = Object.keys(styles)[0];
+        const value = styles[propertyName];
+        return name === propertyName && value === propertyValue;
       });
 
-      if (isSingleWordUtility) className = className + propertyValue;
-      else error['property'] = 'UNIDENTIFIED_PROPERTY';
+      if (namedClassPropertyIndex !== -1) {
+        className = className + Object.keys(namedClassProperties)[namedClassPropertyIndex];
+      } else error['property'] = 'UNIDENTIFIED_PROPERTY';
     }
 
     if (Object.keys(error).length > 0) return { error };
     else return { className };
   };
 
-  return { parse, classname };
+  return { parse, classname, meta: { responsiveModifiers, pseudoModifiers } };
 };
 
 export default Tailwind;
+
+const percentToHex = (percent) => {
+  const intValue = Math.round((percent / 100) * 255); // map percent to nearest integer (0 - 255)
+  const hexValue = intValue.toString(16); // get hexadecimal representation
+  return hexValue.padStart(2, '0'); // format with leading 0 and upper case characters
+};

@@ -101,15 +101,65 @@ describe('classname', () => {
     );
   });
 
-  // todo: unhandled input
+  test('-m-64', () => {
+    assert.deepEqual(
+      { className: '-m-64' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'margin',
+        value: '-16rem'
+      })
+    );
+  });
+
   test('block', () => {
     assert.deepEqual(
-      { error: { property: 'UNIDENTIFIED_PROPERTY' } },
+      { className: 'block' },
       classname({
         responsiveModifier: null,
         pseudoModifier: null,
         property: 'display',
         value: 'block'
+      })
+    );
+  });
+
+  test('tracking-tighter', () => {
+    assert.deepEqual(
+      { className: 'tracking-tighter' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'letterSpacing',
+        value: '-0.05em'
+      })
+    );
+  });
+
+  // todo: unhandled opacity
+  test.todo('bg-red-200/50', () => {
+    assert.deepEqual(
+      { className: 'bg-red-200/50' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'backgroundColor',
+        value: '#FECACA80'
+      })
+    );
+  });
+
+  // todo: unhandled color shorthand/longhand
+
+  test.todo('bg-black', () => {
+    assert.deepEqual(
+      { className: 'bg-black' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'backgroundColor',
+        value: '#000000'
       })
     );
   });

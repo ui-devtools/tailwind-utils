@@ -12,7 +12,7 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'margin',
       value: '1rem',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
@@ -23,7 +23,7 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'width',
       value: '12rem',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
@@ -45,7 +45,7 @@ describe('parse', () => {
       pseudoModifier: 'hover',
       property: 'textColor',
       value: '#2563eb',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
@@ -56,7 +56,7 @@ describe('parse', () => {
       pseudoModifier: 'hover',
       property: 'backgroundColor',
       value: '#dcfce7',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
@@ -67,7 +67,7 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'position',
       value: 'absolute',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
@@ -78,7 +78,18 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'fontFamily',
       value: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
-      relatedProperties: null
+      relatedProperties: {}
+    });
+  });
+
+  test('flex', () => {
+    assert.deepEqual(parse('flex'), {
+      className: 'flex',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'display',
+      value: 'flex',
+      relatedProperties: {}
     });
   });
 
@@ -89,19 +100,73 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'dropShadow',
       value: '0 4px 3px rgb(0 0 0 / 0.07), 0 2px 2px rgb(0 0 0 / 0.06)',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
-  // todo: unhandled input
+  test('bg-red-200/50', () => {
+    assert.deepEqual(parse('bg-red-200/50'), {
+      className: 'bg-red-200/50',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'backgroundColor',
+      value: '#fecaca80',
+      relatedProperties: {}
+    });
+  });
+
+  test('sm:-m-64', () => {
+    assert.deepEqual(parse('sm:-m-64'), {
+      className: 'sm:-m-64',
+      responsiveModifier: 'sm',
+      pseudoModifier: null,
+      property: 'margin',
+      value: '-16rem',
+      relatedProperties: {}
+    });
+  });
+
+  test('right-2/4', () => {
+    assert.deepEqual(parse('right-2/4'), {
+      className: 'right-2/4',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'right',
+      value: '50%',
+      relatedProperties: {}
+    });
+  });
+
+  // composite values
+  test('sr-only', () => {
+    assert.deepEqual(parse('sr-only'), {
+      className: 'sr-only',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'composite',
+      value: null,
+      relatedProperties: {
+        position: 'absolute',
+        width: '1px',
+        height: '1px',
+        padding: '0',
+        margin: '-1px',
+        overflow: 'hidden',
+        clip: 'rect(0, 0, 0, 0)',
+        whiteSpace: 'nowrap',
+        borderWidth: '0'
+      }
+    });
+  });
+
   test('block', () => {
     assert.deepEqual(parse('block'), {
       className: 'block',
       responsiveModifier: null,
       pseudoModifier: null,
-      property: 'ERROR',
-      value: 'ERROR',
-      relatedProperties: null
+      property: 'display',
+      value: 'block',
+      relatedProperties: {}
     });
   });
 
@@ -113,7 +178,7 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'backgroundColor',
       value: '#dcfce7',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 
@@ -124,7 +189,7 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'ERROR',
       value: 'ERROR',
-      relatedProperties: null
+      relatedProperties: {}
     });
   });
 });

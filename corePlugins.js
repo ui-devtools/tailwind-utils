@@ -2166,4 +2166,6 @@ module.exports = {
   namedClassProperties
 };
 
-console.log(namedClassProperties);
+console.log(skipped);
+
+// TODO: handle skippedProperties one by one

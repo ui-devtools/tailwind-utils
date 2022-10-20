@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { describe, expect, test } from '@jest/globals';
+import { describe, test, assert } from 'vitest';
 
 import Tailwind from './index';
 const config = require('./tailwind.config');
@@ -13,6 +13,15 @@ const isPseudoState = (selector) => {
   );
 };
 
+meta.responsiveModifiers.push('32xl');
+const isResponsive = (selector) => {
+  return Boolean(
+    meta.responsiveModifiers.find((modifier) => {
+      if (selector.includes(modifier + ':')) return true;
+    })
+  );
+};
+
 const compositeClassNames = [
   'container',
   'sr-only',
@@ -22,36 +31,44 @@ const compositeClassNames = [
   'scale-*',
   'skew-*',
   'rotate-*',
-  'rounded-t',
-  'rounded-r',
-  'rounded-b',
-  'rounded-l'
+  'rounded-*',
+  'truncate',
+  'break-normal',
+  'antialiased',
+  'outline-none',
+  'backdrop-filter',
+  'filter',
+  'transition-*'
 ];
 
-// todo: pick class names from docs or files and put them in a list here
 const source = fs.readFileSync('./fixtures/tailwind-2.css', 'utf8');
 const selectors = source.split('}\n').map((code) => code.split('{')[0].trim());
 const classNames = selectors
   .filter((selector) => selector.startsWith('.'))
   .filter((selector) => !selector.includes(' '))
+  .filter((selector) => !selector.includes(','))
   .map((selector) => selector.replace('.', ''))
-  .map((selector) => selector.replace('\\', ''))
-  .filter((selector) => !isPseudoState(selector));
+  .map((selector) => selector.replace('\\:', ':'))
+  .map((selector) => selector.replace('\\.', '.'))
+  .map((selector) => selector.replace('\\/', '/')) // 1\/2 → 1/2
+  .map((selector) => selector.replace('::placeholder', ''))
+  .filter((selector) => !isPseudoState(selector))
+  .filter((selector) => !isResponsive(selector));
 
 describe('generated suite', () => {
   // test.only('debug', async () => {
-  //   const originalClassName = 'flex-nowrap';
+  //   const originalClassName = 'ease-in-out';
   //   const definition = parse(originalClassName);
   //   console.log(definition);
-  //   const { className: generatedClassName } = classname(definition);
-  //   assert.equal(generatedClassName, originalClassName);
+  //   const { className: generatedClassName, error } = classname(definition);
+  //   console.log({ generatedClassName, error });
+  //   assert.equal(originalClassName, generatedClassName);
   // });
+  // return;
 
-  // todo: it crashes trying to handle 24000 classes 😅
-
-  classNames.slice(0, 10000).forEach((fixture) => {
+  classNames.forEach((fixture) => {
     if (compositeClassNames.find((pattern) => fixture.match(pattern))) {
-      // test.skip(fixture);
+      test.skip(fixture);
       return;
     }
 
@@ -62,15 +79,18 @@ describe('generated suite', () => {
       const { className, relatedProperties, ...definition } = parse(originalClassName);
       const { className: generatedClassName } = classname(definition);
 
-      if (knownEquals[originalClassName]) expect(generatedClassName).toEqual(knownEquals[originalClassName]);
-      else expect(generatedClassName).toEqual(originalClassName);
+      if (knownEquals[originalClassName]) assert.equal(generatedClassName, knownEquals[originalClassName]);
+      else assert.equal(originalClassName, generatedClassName);
     });
   });
 });
 
 const knownEquals = {
-  container: 'w-full',
-  'order-first': '-order-last'
+  'decoration-clone': 'box-decoration-clone',
+  'decoration-slice': 'box-decoration-slice',
+  'backdrop-blur-none': 'backdrop-blur-0',
+  'blur-none': 'blur-0',
+  'ease-in-out': 'ease'
 };
 
 [
