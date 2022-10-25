@@ -7,8 +7,6 @@ const Tailwind = (config: Config) => {
   const resolvedConfig = resolveConfig(config);
   const theme = resolvedConfig.theme || {};
 
-  const flatColors = flattenColorPalette(theme.colors);
-
   // add negative values to scales
   Object.keys(properties).forEach((property) => {
     const { scale, supportsNegativeValues } = properties[property];
@@ -69,26 +67,30 @@ const Tailwind = (config: Config) => {
         propertyValue = styles[propertyName];
       }
     } else {
-      const possiblePropertiesNames = Object.keys(properties).filter((name) => {
+      const possiblePropertyNames = Object.keys(properties).filter((name) => {
         const property = properties[name];
         if (classNameWithoutModifers === property.prefix) return true; // flex-grow-DEFAULT = flex-grow
         if (classNameWithoutModifers.startsWith(property.prefix + '-')) return true;
         return false;
       });
 
-      if (possiblePropertiesNames.length === 0) {
+      if (possiblePropertyNames.length === 0) {
         // no clue what this is then
         // TODO: improve error for unhandled properties
         propertyName = 'ERROR';
         propertyValue = 'ERROR';
       } else {
         // match value to find property
-        const matchingPropertyName = possiblePropertiesNames
+        const matchingPropertyName = possiblePropertyNames
           .sort((a, b) => properties[b].prefix.length - properties[a].prefix.length)
           .find((name) => {
             const property = properties[name];
 
-            const scale = property.scale === 'colors' ? flatColors : theme[property.scale];
+            // flatten color scales
+            const scale =
+              property.scale.includes('color') || property.scale.includes('Color')
+                ? flattenColorPalette(theme[property.scale])
+                : theme[property.scale];
             if (!scale) return false; // couldn't find scale for property, probably unhandled
 
             const scaleKey =
@@ -108,7 +110,10 @@ const Tailwind = (config: Config) => {
           propertyName = matchingPropertyName;
           const property = properties[matchingPropertyName];
 
-          const scale = property.scale === 'colors' ? flatColors : theme[property.scale];
+          const scale =
+            property.scale.includes('color') || property.scale.includes('Color')
+              ? flattenColorPalette(theme[property.scale])
+              : theme[property.scale];
           const scaleKey =
             property.scale === 'colors'
               ? // remove opacity modifier
@@ -189,9 +194,13 @@ const Tailwind = (config: Config) => {
     const matchingProperty = properties[propertyName];
 
     if (matchingProperty) {
-      // find value on scale
-      const scale = matchingProperty.scale === 'colors' ? flatColors : theme[matchingProperty.scale];
+      // flatten color scales
+      const scale =
+        matchingProperty.scale.includes('color') || matchingProperty.scale.includes('Color')
+          ? flattenColorPalette(theme[matchingProperty.scale])
+          : theme[matchingProperty.scale];
 
+      // find value on scale
       if (scale) {
         let scaleKey;
 
@@ -246,7 +255,7 @@ const Tailwind = (config: Config) => {
     else return { className };
   };
 
-  return { parse, classname, meta: { responsiveModifiers, pseudoModifiers } };
+  return { parse, classname, meta: { responsiveModifiers, pseudoModifiers, resolvedConfig } };
 };
 
 export default Tailwind;

@@ -1,3 +1,5 @@
+// todo: reduce number of skipped tests
+
 import fs from 'fs';
 import { describe, test, assert } from 'vitest';
 
@@ -8,7 +10,7 @@ const { parse, classname, meta } = Tailwind(config);
 const isPseudoState = (selector) => {
   return Boolean(
     meta.pseudoModifiers.find((modifier) => {
-      if (selector.endsWith(':' + modifier)) return true;
+      if (selector.includes(':' + modifier)) return true;
     })
   );
 };
@@ -38,15 +40,16 @@ const compositeClassNames = [
   'outline-none',
   'backdrop-filter',
   'filter',
-  'transition-*'
+  'transition-*',
+  '/[0|5|10|20|25|30|40|50|60|70|75|80|95|100]' // opacity
 ];
 
 const source = fs.readFileSync('./fixtures/tailwind-2.css', 'utf8');
 const selectors = source.split('}\n').map((code) => code.split('{')[0].trim());
 const classNames = selectors
   .filter((selector) => selector.startsWith('.'))
-  .filter((selector) => !selector.includes(' '))
   .filter((selector) => !selector.includes(','))
+  .filter((selector) => !selector.includes(' '))
   .map((selector) => selector.replace('.', ''))
   .map((selector) => selector.replace('\\:', ':'))
   .map((selector) => selector.replace('\\.', '.'))
@@ -57,7 +60,7 @@ const classNames = selectors
 
 describe('generated suite', () => {
   // test.only('debug', async () => {
-  //   const originalClassName = 'ease-in-out';
+  //   const originalClassName = 'accent-rose-800';
   //   const definition = parse(originalClassName);
   //   console.log(definition);
   //   const { className: generatedClassName, error } = classname(definition);
@@ -79,11 +82,17 @@ describe('generated suite', () => {
       const { className, relatedProperties, ...definition } = parse(originalClassName);
       const { className: generatedClassName } = classname(definition);
 
-      if (knownEquals[originalClassName]) assert.equal(generatedClassName, knownEquals[originalClassName]);
-      else assert.equal(originalClassName, generatedClassName);
+      assert.equal(generatedClassName, getEquivalent(originalClassName));
     });
   });
 });
+
+const getEquivalent = (className) => {
+  if (knownEquals[className]) return knownEquals[className];
+  else if (className.includes('blue-gray')) return className.replace('blue-gray', 'slate');
+  else if (className.includes('zinc')) return className.replace('zinc', 'neutral');
+  else return className;
+};
 
 const knownEquals = {
   'decoration-clone': 'box-decoration-clone',

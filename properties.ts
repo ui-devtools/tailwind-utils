@@ -206,6 +206,7 @@ export const properties: Properties = {
   zIndex: { prefix: 'z', scale: 'zIndex', supportsNegativeValues: true },
 
   // added manually:
+  accentColor: { scale: 'accentColor', prefix: 'accent' },
   alignSelf: { scale: 'alignSelf', prefix: 'self' },
   animation: { prefix: 'animate', scale: 'animation' },
   backgroundColor: { prefix: 'bg', scale: 'colors' },
@@ -233,7 +234,12 @@ export const properties: Properties = {
 
   boxShadow: { prefix: 'shadow', scale: 'boxShadow' },
   boxShadowColor: { prefix: 'shadow', scale: 'colors' },
+  caretColor: { prefix: 'caret', scale: 'caretColor' },
 
+  divideColor: { prefix: 'divide', scale: 'colors' },
+  divideOpacity: { prefix: 'divide-opacity', scale: 'divideOpacity' },
+  divideX: { prefix: 'divide-x', scale: 'divideWidth' },
+  divideY: { prefix: 'divide-y', scale: 'divideWidth' },
   dropShadow: { prefix: 'drop-shadow', scale: 'dropShadow' },
 
   // svg
@@ -326,6 +332,7 @@ export const properties: Properties = {
   spaceY: { prefix: 'space-y', scale: 'space' },
 
   textColor: { prefix: 'text', scale: 'colors' },
+  textDecorationColor: { prefix: 'decoration', scale: 'textDecorationColor' },
 
   transitionProperty: { prefix: 'transition', scale: 'transitionProperty' },
   translate: { prefix: 'translate', scale: 'translate', supportsNegativeValues: true },
@@ -435,6 +442,7 @@ export const namedClassProperties = {
   'content-evenly': { 'align-content': 'space-evenly' },
   'content-start': { 'align-content': 'flex-start' },
   contents: { display: 'contents' },
+  'content-none': { content: 'none' },
   'decoration-clone': { 'box-decoration-break': 'clone' },
   'decoration-slice': { 'box-decoration-break': 'slice' },
   'decoration-dashed': { 'text-decoration-style': 'dashed' },
@@ -443,6 +451,13 @@ export const namedClassProperties = {
   'decoration-solid': { 'text-decoration-style': 'solid' },
   'decoration-wavy': { 'text-decoration-style': 'wavy' },
   'diagonal-fractions': { 'font-variant-numeric': 'diagonal-fractions' },
+
+  'divide-solid': { 'border-style': 'solid' },
+  'divide-dashed': { 'border-style': 'dashed' },
+  'divide-dotted': { 'border-style': 'dotted' },
+  'divide-double': { 'border-style': 'double' },
+  'divide-none': { 'border-style': 'none' },
+
   'filter-none': { filter: 'none' },
   fixed: { position: 'fixed' },
   flex: { display: 'flex' },
@@ -608,12 +623,22 @@ export const namedClassProperties = {
   'self-start': { 'align-self': 'flex-start' },
   'self-stretch': { 'align-self': 'stretch' },
   'slashed-zero': { 'font-variant-numeric': 'slashed-zero' },
+
   'snap-align-none': { 'scroll-snap-align': 'none' },
   'snap-always': { 'scroll-snap-stop': 'always' },
   'snap-center': { 'scroll-snap-align': 'center' },
   'snap-end': { 'scroll-snap-align': 'end' },
   'snap-normal': { 'scroll-snap-stop': 'normal' },
   'snap-start': { 'scroll-snap-align': 'start' },
+
+  '.snap-mandatory': { '--tw-scroll-snap-strictness': 'mandatory' },
+  '.snap-proximity': { '--tw-scroll-snap-strictness': 'proximity' },
+
+  '.snap-none': { 'scroll-snap-type': 'none' },
+  '.snap-x': { 'scroll-snap-type': 'x var(--tw-scroll-snap-strictness)' },
+  '.snap-y': { 'scroll-snap-type': 'y var(--tw-scroll-snap-strictness)' },
+  '.snap-both': { 'scroll-snap-type': 'both var(--tw-scroll-snap-strictness)' },
+
   'sr-only': {
     position: 'absolute',
     width: '1px',
@@ -652,6 +677,18 @@ export const namedClassProperties = {
   'text-left': { 'text-align': 'left' },
   'text-right': { 'text-align': 'right' },
   'text-start': { 'text-align': 'start' },
+
+  'touch-auto': { 'touch-action': 'auto' },
+  'touch-none': { 'touch-action': 'none' },
+  'touch-pan-x': { 'touch-action': 'pan-x' },
+  'touch-pan-left': { 'touch-action': 'pan-left' },
+  'touch-pan-right': { 'touch-action': 'pan-right' },
+  'touch-pan-y': { 'touch-action': 'pan-y' },
+  'touch-pan-up': { 'touch-action': 'pan-up' },
+  'touch-pan-down': { 'touch-action': 'pan-down' },
+  'touch-pinch-zoom': { 'touch-action': 'pinch-zoom' },
+  'touch-manipulation': { 'touch-action': 'manipulation' },
+
   truncate: {
     overflow: 'hidden',
     'text-overflow': 'ellipsis',
@@ -667,17 +704,4 @@ export const namedClassProperties = {
   'whitespace-pre-wrap': { 'white-space': 'pre-wrap' }
 };
 
-export const unsupportedProperties = [
-  'accentColor',
-  'caretColor',
-  'content',
-  'divideColor',
-  'divideOpacity',
-  'divideWidth',
-  'fontVariantNumeric',
-  'gradientColorStops',
-  'scrollSnapType',
-  'textDecorationColor',
-  'touchAction',
-  'transform'
-];
+export const unsupportedProperties = [];
