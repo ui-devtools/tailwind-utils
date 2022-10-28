@@ -137,8 +137,30 @@ describe('classname', () => {
     );
   });
 
+  test.todo('composite class', () => {
+    assert.deepEqual(
+      { className: 'sr-only' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'composite',
+        value: null,
+        relatedProperties: {
+          position: 'static',
+          width: 'auto',
+          height: 'auto',
+          padding: '0',
+          margin: '0',
+          overflow: 'visible',
+          clip: 'auto',
+          whiteSpace: 'normal'
+        }
+      })
+    );
+  });
+
   // todo: unhandled opacity
-  test.todo('bg-red-200/50', () => {
+  test.skip('bg-red-200/50', () => {
     assert.deepEqual(
       { className: 'bg-red-200/50' },
       classname({

@@ -95,7 +95,7 @@ describe('parse', () => {
 
   test('drop-shadow-md', () => {
     assert.deepEqual(parse('drop-shadow-md'), {
-      className: 'drop-shadow-md',
+      className: 'drop-shadow-m',
       responsiveModifier: null,
       pseudoModifier: null,
       property: 'dropShadow',

@@ -25,7 +25,7 @@ const isResponsive = (selector) => {
 };
 
 const compositeClassNames = [
-  'container',
+  'container', // no clue what to do with this
   'sr-only',
   'not-sr-only',
   'transform',
@@ -60,7 +60,7 @@ const classNames = selectors
 
 describe('generated suite', () => {
   // test.only('debug', async () => {
-  //   const originalClassName = 'accent-rose-800';
+  //   const originalClassName = 'sr-only';
   //   const definition = parse(originalClassName);
   //   console.log(definition);
   //   const { className: generatedClassName, error } = classname(definition);
