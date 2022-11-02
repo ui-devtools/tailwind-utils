@@ -9,8 +9,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'm-4' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'margin',
         value: '1rem'
       })
@@ -22,7 +20,7 @@ describe('classname', () => {
       { className: 'md:w-48' },
       classname({
         responsiveModifier: 'md',
-        pseudoModifier: null,
+
         property: 'width',
         value: '12rem'
       })
@@ -33,8 +31,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'text-sm' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'fontSize',
         value: '0.875rem'
       })
@@ -57,7 +53,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'hover:bg-green-100' },
       classname({
-        responsiveModifier: null,
         pseudoModifier: 'hover',
         property: 'backgroundColor',
         value: '#dcfce7'
@@ -69,8 +64,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'absolute' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'position',
         value: 'absolute'
       })
@@ -81,8 +74,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'font-serif' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'fontFamily',
         value: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif'
       })
@@ -93,8 +84,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'drop-shadow-md' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'dropShadow',
         value: '0 4px 3px rgb(0 0 0 / 0.07), 0 2px 2px rgb(0 0 0 / 0.06)'
       })
@@ -105,8 +94,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: '-m-64' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'margin',
         value: '-16rem'
       })
@@ -117,8 +104,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'block' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'display',
         value: 'block'
       })
@@ -129,8 +114,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'tracking-tighter' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'letterSpacing',
         value: '-0.05em'
       })
@@ -141,8 +124,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'sr-only' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'composite',
         value: null,
         relatedProperties: {
@@ -163,8 +144,17 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'bg-red-200/50' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
+        property: 'backgroundColor',
+        value: '#fecaca80'
+      })
+    );
+  });
+
+  test.only('asdinoasd', () => {
+    assert.deepEqual(
+      { className: 'hover:bg-red-200/50' },
+      classname({
+        pseudoModifier: 'hover',
         property: 'backgroundColor',
         value: '#fecaca80'
       })
@@ -175,8 +165,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'bg-red-200/50' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'backgroundColor',
         value: '#FECACA80'
       })
@@ -187,8 +175,6 @@ describe('classname', () => {
     assert.deepEqual(
       { error: { value: 'Only hex values are supported, example: #fecaca80' } },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'backgroundColor',
         value: 'rgb(255,255,255)'
       })
@@ -200,8 +186,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'bg-black/50' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'backgroundColor',
         value: '#0008'
       })
@@ -213,8 +197,6 @@ describe('classname', () => {
     assert.deepEqual(
       { className: 'bg-black' },
       classname({
-        responsiveModifier: null,
-        pseudoModifier: null,
         property: 'backgroundColor',
         value: '#000000'
       })
@@ -231,7 +213,7 @@ describe('classname', () => {
       },
       classname({
         responsiveModifier: 'small',
-        pseudoModifier: null,
+
         property: 'backgroundColor',
         value: '#dcfce7'
       })
@@ -247,7 +229,6 @@ describe('classname', () => {
         }
       },
       classname({
-        responsiveModifier: null,
         pseudoModifier: 'hovers',
         property: 'backgroundColor',
         value: '#dcfce7'
@@ -260,7 +241,7 @@ describe('classname', () => {
       { error: { property: 'UNIDENTIFIED_PROPERTY' } },
       classname({
         responsiveModifier: 'sm',
-        pseudoModifier: null,
+
         property: 'fontSizes',
         value: '1.5rem'
       })
@@ -272,7 +253,7 @@ describe('classname', () => {
       { error: { value: 'UNIDENTIFIED_VALUE' } },
       classname({
         responsiveModifier: 'sm',
-        pseudoModifier: null,
+
         property: 'fontSize',
         value: '1.5em' // should be rem
       })

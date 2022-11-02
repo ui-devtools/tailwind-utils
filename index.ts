@@ -1,7 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import type { Config } from 'tailwindcss/types/config';
 import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
-import { properties, namedClassProperties, unsupportedProperties } from './properties';
+import { properties, namedClassProperties } from './properties';
 
 const Tailwind = (config: Config) => {
   const resolvedConfig = resolveConfig(config);
@@ -158,8 +158,8 @@ const Tailwind = (config: Config) => {
     property: propertyName,
     value: propertyValue
   }: {
-    responsiveModifier: string | null;
-    pseudoModifier: string | null;
+    responsiveModifier?: string;
+    pseudoModifier?: string;
     property: string;
     value: string;
   }) => {
@@ -170,10 +170,6 @@ const Tailwind = (config: Config) => {
       property?: string;
       value?: string;
     } = {};
-
-    if (unsupportedProperties.includes(propertyName)) {
-      error['property'] = 'UNSUPPORTED_PROPERTY';
-    }
 
     if (responsiveModifier) {
       if (responsiveModifiers.includes(responsiveModifier)) className = responsiveModifier + ':';

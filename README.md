@@ -21,52 +21,21 @@ npm install tailwind-utils
 
 ### Usage
 
-
 API choice 1:
 
 ```ts
-import { parse, create, Definition } from 'tailwind-utils'
-import theme from './tailwind-theme.js'
+import createUtils from 'tailwind-utils';
+import config from './tailwind.config.js';
 
-const definition:Definition = parse(theme, 'md:w-48');
-// { responsiveModifier: 'md', property: 'width', prefix: 'w', value: 48 }
+const { parse, classname } = createUtils(config);
 
-const className:string = create(theme, { responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor', value: 'red-500' })
-// 'md:hover:bg-48'
+const definition = parse('md:w-48');
+// { responsiveModifier: 'md', prefix: 'w', property: 'width',  value: '12rem' }
+
+const className = classname({
+  pseudoModifier: 'hover',
+  property: 'backgroundColor',
+  value: 'fecaca80'
+});
+// hover:bg-red-200/50
 ```
-
-API choice 2:
-
-```ts
-import { ClassName, Definition } from 'tailwind-utils'
-import theme from './tailwind-theme.js'
-
-const { parse, create } = ClassName(theme)
-
-const definition:Definition = parse('md:w-48');
-// { responsiveModifier: 'md', property: 'width', prefix: 'w', value: 48 }
-
-const className:string = create({ responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor', value: 'red-500' })
-// 'md:hover:bg-48'
-```
-
-### Rough checklist
-
-- [ ] Set up repo
-- [ ] Set up typescript
-- [ ] Set up tests
-- [ ] Parse [theme file](https://tailwindcss.com/docs/configuration#creating-your-configuration-file)
-- [ ] parse: key-value
-- [ ] parse: key without value (like [`border`](https://tailwindcss.com/docs/border-width)
-- [ ] parse: value without key (like [`block`](https://tailwindcss.com/docs/display#block))
-- [ ] parse: [responsive modifier](https://tailwindcss.com/docs/responsive-design)
-- [ ] parse: [pseudo modifier](https://tailwindcss.com/docs/hover-focus-and-other-states)
-- [ ] create: key-value
-- [ ] create: key without value (like [`border`](https://tailwindcss.com/docs/border-width)
-- [ ] create: value without key (like [`block`](https://tailwindcss.com/docs/display#block))
-- [ ] create: [responsive modifier](https://tailwindcss.com/docs/responsive-design)
-- [ ] create: [pseudo modifier](https://tailwindcss.com/docs/hover-focus-and-other-states)
-- [ ] Readme
-
-This library will replace the tightly coupled utils - https://github.com/ui-devtools/ui-devtools/blob/main/packages/devtools/src/utils.js
-

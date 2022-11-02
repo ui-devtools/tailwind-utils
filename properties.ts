@@ -585,5 +585,3 @@ export const namedClassProperties = {
   'whitespace-pre-line': { 'white-space': 'pre-line' },
   'whitespace-pre-wrap': { 'white-space': 'pre-wrap' }
 };
-
-export const unsupportedProperties = [];
