@@ -159,8 +159,19 @@ describe('classname', () => {
     );
   });
 
-  // todo: unhandled opacity
-  test.skip('bg-red-200/50', () => {
+  test('bg-red-200/50', () => {
+    assert.deepEqual(
+      { className: 'bg-red-200/50' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'backgroundColor',
+        value: '#fecaca80'
+      })
+    );
+  });
+
+  test('bg-red-200/50 uppercase', () => {
     assert.deepEqual(
       { className: 'bg-red-200/50' },
       classname({
@@ -172,8 +183,32 @@ describe('classname', () => {
     );
   });
 
-  // todo: unhandled color shorthand/longhand
+  test('unsupported color format', () => {
+    assert.deepEqual(
+      { error: { value: 'Only hex values are supported, example: #fecaca80' } },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'backgroundColor',
+        value: 'rgb(255,255,255)'
+      })
+    );
+  });
 
+  // todo: unhandled color shorthand/longhand
+  test.todo('bg-black/50 shortform', () => {
+    assert.deepEqual(
+      { className: 'bg-black/50' },
+      classname({
+        responsiveModifier: null,
+        pseudoModifier: null,
+        property: 'backgroundColor',
+        value: '#0008'
+      })
+    );
+  });
+
+  // todo: black is stored as #000 in theme instead of full value :/
   test.todo('bg-black', () => {
     assert.deepEqual(
       { className: 'bg-black' },

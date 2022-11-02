@@ -208,10 +208,29 @@ const Tailwind = (config: Config) => {
           // format: sm: [ '0.875rem', { lineHeight: '1.25rem' } ],
           scaleKey = Object.keys(scale).find((key) => scale[key][0] === propertyValue);
         } else if (matchingProperty.scale === 'colors') {
+          if (!propertyValue.startsWith('#')) {
+            error['value'] = 'Only hex values are supported, example: #fecaca80';
+          } else if (![7, 9].includes(propertyValue.length)) {
+            error['value'] =
+              'Shorthand hex values like #0008 are not supported, please pass the full value like #00000080';
+          }
+
+          let opacity: number | null = null;
+
+          // example: #fecaca80
+          if (propertyValue.length === 9) {
+            opacity = hexToPercent(propertyValue.slice(-2));
+            propertyValue = propertyValue.slice(0, -2);
+          }
+
+          // convert to lowercase for comparison
+          propertyValue = propertyValue.toLowerCase();
+
           scaleKey = Object.keys(scale).find((key) => {
-            // TODO: check for opacity
             return scale[key] === propertyValue;
           });
+
+          if (scaleKey && opacity) scaleKey = scaleKey + '/' + opacity;
         } else {
           scaleKey = Object.keys(scale).find((key) => {
             // true for dropShadow and fontFamily
@@ -233,7 +252,7 @@ const Tailwind = (config: Config) => {
         if (scaleKey === 'DEFAULT') {
           /* we don't add default */
         } else if (scaleKey) className += '-' + scaleKey;
-        else error['value'] = 'UNIDENTIFIED_VALUE';
+        else if (!error.value) error['value'] = 'UNIDENTIFIED_VALUE';
       } else {
         error['property'] = 'UNIDENTIFIED_PROPERTY';
       }
@@ -260,8 +279,12 @@ const Tailwind = (config: Config) => {
 
 export default Tailwind;
 
-const percentToHex = (percent) => {
+const percentToHex = (percent: number) => {
   const intValue = Math.round((percent / 100) * 255); // map percent to nearest integer (0 - 255)
   const hexValue = intValue.toString(16); // get hexadecimal representation
   return hexValue.padStart(2, '0'); // format with leading 0 and upper case characters
+};
+
+const hexToPercent = (hex: string) => {
+  return Math.floor((100 * parseInt(hex, 16)) / 255);
 };

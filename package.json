@@ -11,8 +11,8 @@
     "utils"
   ],
   "scripts": {
-    "test": "vitest --run --reporter='./reporter'",
-    "test:generated": "vitest  generated --no-isolate",
+    "test": "vitest parse classname --reporter=dot",
+    "test:generated": "vitest generated --no-isolate",
     "build:fixtures": "npx tailwindcss -i node_modules/tailwindcss/tailwind.css -o ./dist/output.css"
   },
   "devDependencies": {
@@ -35,6 +35,7 @@
     "url": "https://github.com/ui-devtools/tailwind-utils/issues"
   },
   "dependencies": {
-    "lodash.camelcase": "^4.3.0"
+    "lodash.camelcase": "^4.3.0",
+    "lodash.uniqby": "^4.7.0"
   }
 }

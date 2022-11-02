@@ -93,17 +93,6 @@ describe('parse', () => {
     });
   });
 
-  test('drop-shadow-md', () => {
-    assert.deepEqual(parse('drop-shadow-md'), {
-      className: 'drop-shadow-m',
-      responsiveModifier: null,
-      pseudoModifier: null,
-      property: 'dropShadow',
-      value: '0 4px 3px rgb(0 0 0 / 0.07), 0 2px 2px rgb(0 0 0 / 0.06)',
-      relatedProperties: {}
-    });
-  });
-
   test('bg-red-200/50', () => {
     assert.deepEqual(parse('bg-red-200/50'), {
       className: 'bg-red-200/50',
@@ -111,17 +100,6 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'backgroundColor',
       value: '#fecaca80',
-      relatedProperties: {}
-    });
-  });
-
-  test('sm:-m-64', () => {
-    assert.deepEqual(parse('sm:-m-64'), {
-      className: 'sm:-m-64',
-      responsiveModifier: 'sm',
-      pseudoModifier: null,
-      property: 'margin',
-      value: '-16rem',
       relatedProperties: {}
     });
   });
@@ -189,6 +167,39 @@ describe('parse', () => {
       pseudoModifier: null,
       property: 'ERROR',
       value: 'ERROR',
+      relatedProperties: {}
+    });
+  });
+
+  test('drop-shadow-md', () => {
+    assert.deepEqual(parse('drop-shadow-md'), {
+      className: 'drop-shadow-md',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'dropShadow',
+      value: '0 4px 3px rgb(0 0 0 / 0.07), 0 2px 2px rgb(0 0 0 / 0.06)',
+      relatedProperties: {}
+    });
+  });
+
+  test('sm:-m-64', () => {
+    assert.deepEqual(parse('sm:-m-64'), {
+      className: 'sm:-m-64',
+      responsiveModifier: 'sm',
+      pseudoModifier: null,
+      property: 'margin',
+      value: '-16rem',
+      relatedProperties: {}
+    });
+  });
+
+  test('bg-red-200/50', () => {
+    assert.deepEqual(parse('bg-red-200/50'), {
+      className: 'bg-red-200/50',
+      responsiveModifier: null,
+      pseudoModifier: null,
+      property: 'backgroundColor',
+      value: '#fecaca80',
       relatedProperties: {}
     });
   });

@@ -1,5 +1,3 @@
-// todo: reduce number of skipped tests
-
 import fs from 'fs';
 import { describe, test, assert } from 'vitest';
 
