@@ -11,7 +11,7 @@
     "utils"
   ],
   "scripts": {
-    "test": "vitest parse classname ",
+    "test": "FORCE_COLOR=3 vitest parse classname --reporter=custom-reporter",
     "test:generated": "vitest generated --no-isolate",
     "build:fixtures": "npx tailwindcss -i node_modules/tailwindcss/tailwind.css -o ./dist/output.css"
   },
