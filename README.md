@@ -3,6 +3,8 @@
   <br><br>
   <b>Utilities to parse and create tailwind classnames</b>
   <br><br/>
+  <img src="https://github.com/ui-devtools/tailwind-utils/actions/workflows/test.yml/badge.svg"/>
+  <img src="https://img.shields.io/badge/maturity-proof--of--concept-d85151"/>
 </p>
 
 &nbsp;
