@@ -108,7 +108,7 @@ ${chalk.gray(footer)}
 class reporter implements Reporter {
   onInit(ctx: Vitest) {
     this.ctx = ctx;
-    if (!process.env.CI) clear(100);
+    clear(100);
   }
 
   // onCollected is called for every file
@@ -144,7 +144,7 @@ class reporter implements Reporter {
 
   // onFinished is called once at the end
   async onFinished(files: File[] = [], errors?: unknown[]) {
-    if (!process.env.CI) clear(100);
+    clear(100);
 
     files.forEach((file) => {
       const results = {
@@ -186,6 +186,8 @@ class reporter implements Reporter {
 export default reporter;
 
 const clear = (linesToClear) => {
+  if (process.env.CI) return;
+
   const stream = process.stdout;
   stream.cursorTo(0);
 
