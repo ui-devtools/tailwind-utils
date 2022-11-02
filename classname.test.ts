@@ -48,7 +48,7 @@ describe('classname', () => {
     );
   });
 
-  test.only('color instead of textColor', () => {
+  test('color instead of textColor', () => {
     assert.deepEqual(
       { error: { property: 'UNIDENTIFIED_PROPERTY, did you mean textColor?' } },
       classname({
