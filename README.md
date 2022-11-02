@@ -21,23 +21,41 @@ npm install tailwind-utils
 
 ### Usage
 
-API choice 1:
-
 ```ts
 import createUtils from 'tailwind-utils';
 import config from './tailwind.config.js';
 
 const { parse, classname } = createUtils(config);
 
-const definition = parse('md:w-48');
-// { responsiveModifier: 'md', prefix: 'w', property: 'width',  value: '12rem' }
+const definition = parse('w-48');
+// { prefix: 'w', property: 'width', value: '12rem' }
 
-const className = classname({
+const definition = parse('md:hover:bg-red-200/50');
+// { responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor' value: '#fecaca80' }
+
+const { className } = classname({ property: 'margin', value: '-16rem' });
+// -m-64
+
+const { className } = classname({
+  responsiveModifier: 'md',
   pseudoModifier: 'hover',
   property: 'backgroundColor',
   value: 'fecaca80'
 });
-// hover:bg-red-200/50
+// md:hover:bg-red-200/50
+
+const { className, error } = classname({
+  responsiveModifier: 'small',
+  property: 'textColor',
+  value: 'fecaca80'
+});
+/*
+{
+  error: {
+    responsiveModifier: 'Unidentified responsive modifier, expected one of [sm, md, lg, xl, 2xl], got small'
+  }
+}
+*/
 ```
 
 &nbsp;

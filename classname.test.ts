@@ -20,7 +20,6 @@ describe('classname', () => {
       { className: 'md:w-48' },
       classname({
         responsiveModifier: 'md',
-
         property: 'width',
         value: '12rem'
       })
@@ -44,6 +43,18 @@ describe('classname', () => {
         responsiveModifier: 'md',
         pseudoModifier: 'hover',
         property: 'textColor',
+        value: '#2563eb'
+      })
+    );
+  });
+
+  test.only('color instead of textColor', () => {
+    assert.deepEqual(
+      { error: { property: 'UNIDENTIFIED_PROPERTY, did you mean textColor?' } },
+      classname({
+        responsiveModifier: 'md',
+        pseudoModifier: 'hover',
+        property: 'color',
         value: '#2563eb'
       })
     );
@@ -150,17 +161,6 @@ describe('classname', () => {
     );
   });
 
-  test.only('asdinoasd', () => {
-    assert.deepEqual(
-      { className: 'hover:bg-red-200/50' },
-      classname({
-        pseudoModifier: 'hover',
-        property: 'backgroundColor',
-        value: '#fecaca80'
-      })
-    );
-  });
-
   test('bg-red-200/50 uppercase', () => {
     assert.deepEqual(
       { className: 'bg-red-200/50' },
@@ -213,7 +213,6 @@ describe('classname', () => {
       },
       classname({
         responsiveModifier: 'small',
-
         property: 'backgroundColor',
         value: '#dcfce7'
       })

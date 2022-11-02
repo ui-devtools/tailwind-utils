@@ -263,7 +263,11 @@ const Tailwind = (config: Config) => {
 
       if (namedClassPropertyIndex !== -1) {
         className = className + Object.keys(namedClassProperties)[namedClassPropertyIndex];
-      } else error['property'] = 'UNIDENTIFIED_PROPERTY';
+      } else if (propertyName === 'color') {
+        error['property'] = 'UNIDENTIFIED_PROPERTY, did you mean textColor?';
+      } else {
+        error['property'] = 'UNIDENTIFIED_PROPERTY';
+      }
     }
 
     if (Object.keys(error).length > 0) return { error };
