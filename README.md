@@ -39,3 +39,15 @@ const className = classname({
 });
 // hover:bg-red-200/50
 ```
+
+&nbsp;
+
+#### like it?
+
+:star: this repo
+
+&nbsp;
+
+#### license
+
+MIT © [siddharthkp](https://github.com/siddharthkp)
