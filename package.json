@@ -11,9 +11,8 @@
     "utils"
   ],
   "scripts": {
-    "test": "FORCE_COLOR=3 vitest parse classname --reporter=custom-reporter",
-    "test:generated": "vitest generated --no-isolate",
-    "build:fixtures": "npx tailwindcss -i node_modules/tailwindcss/tailwind.css -o ./dist/output.css"
+    "test": "FORCE_COLOR=3 vitest parse classname --reporter=tests/custom-reporter",
+    "test:generated": "vitest generated --no-isolate"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.19.4",

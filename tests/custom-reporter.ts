@@ -35,7 +35,8 @@ const printResults = (results) => {
 
   // pad name to fill column
   const thisNameColumnSize = results.name.length + (results.duration + 'ms').length + 3;
-  const nameColumnSize = 25;
+  // TODO: don't hardcode this
+  const nameColumnSize = 32;
 
   if (thisNameColumnSize < nameColumnSize) {
     const padding = Array(nameColumnSize - thisNameColumnSize - 1)

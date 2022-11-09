@@ -1,7 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import type { Config } from 'tailwindcss/types/config';
 import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
-import { properties, namedClassProperties } from './properties';
+import { properties, namedClassProperties } from './src/properties';
 
 const Tailwind = (config: Config) => {
   const resolvedConfig = resolveConfig(config);

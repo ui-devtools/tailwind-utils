@@ -1,6 +1,6 @@
 import { describe, test, assert } from 'vitest';
 
-import Tailwind from './index';
+import Tailwind from '../src/index';
 const config = require('./tailwind.config');
 const { classname } = Tailwind(config);
 
