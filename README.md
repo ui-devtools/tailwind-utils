@@ -11,11 +11,11 @@
 ### Installation
 
 ```
-yarn add tailwind-utils
+yarn add @ui-devtools/tailwind-utils
 
 or
 
-npm install tailwind-utils
+npm install @ui-devtools/tailwind-utils
 ```
 
 &nbsp;
@@ -23,7 +23,7 @@ npm install tailwind-utils
 ### Usage
 
 ```ts
-import Utils from 'tailwind-utils';
+import Utils from '@ui-devtools/tailwind-utils';
 import config from './tailwind.config.js'; // your tailwind config file, optional
 
 const { parse, classname } = Utils(config);

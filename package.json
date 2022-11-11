@@ -1,6 +1,6 @@
 {
-  "name": "tailwind-utils",
-  "version": "1.0.0-alpha.0",
+  "name": "@ui-devtools/tailwind-utils",
+  "version": "0.0.1",
   "description": "Utilities to parse and create tailwindcss class names",
   "main": "dist/index.js",
   "author": "siddharthkp",
