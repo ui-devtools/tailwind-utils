@@ -23,10 +23,10 @@ npm install tailwind-utils
 ### Usage
 
 ```ts
-import createUtils from 'tailwind-utils';
-import config from './tailwind.config.js';
+import Utils from 'tailwind-utils';
+import config from './tailwind.config.js'; // your tailwind config file, optional
 
-const { parse, classname } = createUtils(config);
+const { parse, classname } = Utils(config);
 
 const definition = parse('w-48');
 // { prefix: 'w', property: 'width', value: '12rem' }

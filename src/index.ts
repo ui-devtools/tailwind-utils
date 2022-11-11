@@ -1,10 +1,11 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import type { Config } from 'tailwindcss/types/config';
 import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
-import { properties, namedClassProperties } from './src/properties';
+import { properties, namedClassProperties } from './properties';
 
-const Tailwind = (config: Config) => {
-  const resolvedConfig = resolveConfig(config);
+const Tailwind = (config?: Config) => {
+  // @ts-ignore resolveConfig doesn't like empty config but stubs it anyways
+  const resolvedConfig = resolveConfig(config || {});
   const theme = resolvedConfig.theme || {};
 
   // add negative values to scales
