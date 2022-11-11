@@ -41,14 +41,14 @@ const { className } = classname({
   responsiveModifier: 'md',
   pseudoModifier: 'hover',
   property: 'backgroundColor',
-  value: 'fecaca80'
+  value: '#fecaca80'
 });
 // md:hover:bg-red-200/50
 
 const { className, error } = classname({
   responsiveModifier: 'small',
   property: 'textColor',
-  value: 'fecaca80'
+  value: '#fecaca80'
 });
 /*
 {
