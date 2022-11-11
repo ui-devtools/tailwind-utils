@@ -22,18 +22,36 @@ npm install @ui-devtools/tailwind-utils
 
 ### Usage
 
+[Open demo in codesandbox](https://codesandbox.io/s/tailwind-utils-m0lvu5?expanddevtools=1)
+
+<br/>
+
+Setup:
+
 ```ts
 import Utils from '@ui-devtools/tailwind-utils';
 import config from './tailwind.config.js'; // your tailwind config file, optional
 
 const { parse, classname } = Utils(config);
+```
 
+<br/>
+
+classname → definition:
+
+```ts
 const definition = parse('w-48');
 // { prefix: 'w', property: 'width', value: '12rem' }
 
 const definition = parse('md:hover:bg-red-200/50');
 // { responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor' value: '#fecaca80' }
 
+```
+<br/>
+
+definition → classname:
+
+```ts
 const { className } = classname({ property: 'margin', value: '-16rem' });
 // -m-64
 
