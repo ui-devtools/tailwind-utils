@@ -1,9 +1,11 @@
 <p align="center">
   <img src="https://avatars2.githubusercontent.com/u/71650913?s=200&v=4" height="50px"/>
   <br><br>
-  <b>Utilities to parse and create tailwind classnames</b>
+  <b>Utilities to parse and create tailwindcss classnames</b>
   <br><br/>
   <img src="https://github.com/ui-devtools/tailwind-utils/actions/workflows/test.yml/badge.svg"/>
+  <br><br>
+  <i>Extracted from the source code for <a href="https://www.ui-devtools.com">UI Devtools</a> and optimised for open source.</i>
 </p>
 
 &nbsp;
@@ -41,11 +43,17 @@ classname → definition:
 
 ```ts
 const definition = parse('w-48');
-// { prefix: 'w', property: 'width', value: '12rem' }
+// { property: 'width', value: '12rem' }
 
 const definition = parse('md:hover:bg-red-200/50');
-// { responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor' value: '#fecaca80' }
-
+/* 
+{ 
+  responsiveModifier: 'md', 
+  pseudoModifier: 'hover', 
+  property: 'backgroundColor' 
+  value: '#fecaca80'
+}
+*/
 ```
 <br/>
 
