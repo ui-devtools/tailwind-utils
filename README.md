@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://avatars2.githubusercontent.com/u/71650913?s=200&v=4" height="50px"/>
   <br><br>
-  <b>Utilities to parse and create tailwind classnames</b>
+  <b>Utilities to parse and create tailwindcss classnames</b>
   <br><br/>
   <img src="https://github.com/ui-devtools/tailwind-utils/actions/workflows/test.yml/badge.svg"/>
   <br><br>
