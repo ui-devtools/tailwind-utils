@@ -46,8 +46,14 @@ const definition = parse('w-48');
 // { prefix: 'w', property: 'width', value: '12rem' }
 
 const definition = parse('md:hover:bg-red-200/50');
-// { responsiveModifier: 'md', pseudoModifier: 'hover', property: 'backgroundColor' value: '#fecaca80' }
-
+/* 
+{ 
+  responsiveModifier: 'md', 
+  pseudoModifier: 'hover', 
+  property: 'backgroundColor' 
+  value: '#fecaca80'
+}
+*/
 ```
 <br/>
 
