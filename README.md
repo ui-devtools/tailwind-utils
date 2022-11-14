@@ -43,7 +43,7 @@ classname → definition:
 
 ```ts
 const definition = parse('w-48');
-// { prefix: 'w', property: 'width', value: '12rem' }
+// { property: 'width', value: '12rem' }
 
 const definition = parse('md:hover:bg-red-200/50');
 /* 
