@@ -4,6 +4,8 @@
   <b>Utilities to parse and create tailwind classnames</b>
   <br><br/>
   <img src="https://github.com/ui-devtools/tailwind-utils/actions/workflows/test.yml/badge.svg"/>
+  <br><br>
+  <i>Extracted from the source code for <a href="https://www.ui-devtools.com">UI Devtools</a> and optimised for open source.</i>
 </p>
 
 &nbsp;
