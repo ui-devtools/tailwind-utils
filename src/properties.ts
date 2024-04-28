@@ -91,6 +91,10 @@ export const properties: Properties = {
   backgroundColor: { prefix: 'bg', scale: 'colors' },
 
   borderColor: { prefix: 'border', scale: 'colors' },
+  borderTopColor: { prefix: "border-t", scale: "borderColor" },
+  borderRightColor: { prefix: "border-r", scale: "borderColor" },
+  borderBottomColor: { prefix: "border-b", scale: "borderColor" },
+  borderLeftColor: { prefix: "border-l", scale: "borderColor" },
   borderStyle: { prefix: 'border', scale: 'borderStyle' },
 
   borderWidth: { prefix: 'border', scale: 'borderWidth' },
